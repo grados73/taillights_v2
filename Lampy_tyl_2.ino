@@ -10,35 +10,54 @@
   ******************************************************************************
   */
 #include <Adafruit_NeoPixel.h>
+
 //
 // Structure of LAMPS current state
 //
 typedef enum
 {
-LAMP_STATE_POZYCJA,             //1
+LAMP_STATE_HEADLIGHTS,          //1
 LAMP_STATE_STOP,                //2
 LAMP_STATE_TURN_L_STOP,         //3
 LAMP_STATE_TURN_R_STOP,         //4
 LAMP_STATE_TURN_L_REVERSE,      //5
 LAMP_STATE_TURN_R_REVERSE,      //6
 LAMP_STATE_HAZARD_LIGHTS,       //7
-LAMP_STATE_HAZARD_REVEERSE,     //8
+LAMP_STATE_HAZARD_REVERSE,      //8
 LAMP_STATE_TURN_L_HEADLIGHTS,   //9
-LAMP_STATE_TURN_P_HEADLIGHTS,   //10
+LAMP_STATE_TURN_R_HEADLIGHTS,   //10
 LAMP_STATE_REVERSE,             //11
 LAMP_STATE_STOP_REVERSE,        //12
 LAMP_STATE_HAZARD_REVERSE,      //13
 LAMP_STATE_LIGHTS_OFF,          //14
 LAMP_STATE_ACTIVATION,          //15     
 LAMP_STATE_SHUTDOWN             //16
+} RearLampState;
 
+// Routinse made in every state
+void HeadlightsRoutine(void);
+void StopRoutine(void);
+void TurnLStopRoutine(void);
+void TurnRStopRoutine(void);
+void TurnLReverseRoutine(void);
+void TurnRReverseRoutine(void);
+void HazardLightsRoutine(void);
+void HazardReverseRoutine(void);
+void TurnLHeadlightsRoutine(void);
+void TurnRHeadlightsRoutine(void);
+void ReverseRoutine(void);
+void StopReverseRoutine(void);
+void HazardReverseRoutine(void);
+void LightsOffRoutine(void);
+void ActivationsRoutine(void);
+void ShutdownRoutine(void);
 
-} LampState;
 
 void setup() {
-  // put your setup code here, to run once:
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+  // initialize variable enum which will hold current state of rear lamp
+  RearLampState LampState = LAMP_STATE_ACTIVATION;
 }
 
 void loop() {
@@ -54,4 +73,17 @@ void loop() {
   delay(100);  
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(2000);                         // wait for a second
+}
+
+void SwitchLampRegular()
+{
+  switch(LampState)
+  {
+    case LAMP_STATE_ACTIVATION:
+      ActivationRoutine();
+      break;
+    
+    default:
+      break;
+  }
 }
