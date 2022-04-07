@@ -4,3 +4,40 @@ a cofania pali sie zawsze i tylko po lewej stronie
 Tak wyszlo szybciej
 
 Ten maly odcinek co widzisz na dole to sa 3 diody
+typedef enum
+{
+LAMP_STATE_HEADLIGHTS,          //1
+LAMP_STATE_STOP,                //2
+LAMP_STATE_TURN_L_STOP,         //3
+LAMP_STATE_TURN_R_STOP,         //4
+LAMP_STATE_TURN_L_REVERSE,      //5
+LAMP_STATE_TURN_R_REVERSE,      //6
+LAMP_STATE_HAZARD_LIGHTS,       //7
+LAMP_STATE_HAZARD_REVERSE,      //8
+LAMP_STATE_TURN_L_HEADLIGHTS,   //9
+LAMP_STATE_TURN_R_HEADLIGHTS,   //10
+LAMP_STATE_REVERSE,             //11
+LAMP_STATE_STOP_REVERSE,        //12
+LAMP_STATE_HAZARD_STOP,      //13
+LAMP_STATE_LIGHTS_OFF,          //14
+LAMP_STATE_ACTIVATION,          //15     
+LAMP_STATE_SHUTDOWN             //16
+} RearLampState;
+
+// Prototype of function routine made in every state
+void HeadlightsRoutine(void);
+void StopRoutine(void);
+void TurnLStopRoutine(void);
+void TurnRStopRoutine(void);
+void TurnLReverseRoutine(void);
+void TurnRReverseRoutine(void);
+void HazardLightsRoutine(void);
+void HazardReverseRoutine(void);
+void TurnLHeadlightsRoutine(void);
+void TurnRHeadlightsRoutine(void);
+void ReverseRoutine(void);
+void StopReverseRoutine(void);
+void HazardReverseRoutine(void);
+void LightsOffRoutine(void);
+void ActivationsRoutine(void);
+void ShutdownRoutine(void);
