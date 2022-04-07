@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "programmer": "arduino:avrispmkii",
+    "sketch": "Lampy_tyl_2.ino",
+    "port": "COM8"
+}
