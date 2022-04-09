@@ -11,6 +11,10 @@
   */
 #include <Adafruit_NeoPixel.h>
 
+#define DEBUG_MODE 1 					// in debuging mode uC answeraing by serial about current state or received command - made to develop program
+#define HIDING_INDICATOR 0				// in initialization LEDs that light up move away the strip and hide
+#define NO_AUTOMATIC_DAYLIGHT 1			// after initialization headlights turn off automatically, 0 - turn headlight
+
 
 //Control commands to receive
 #define STOP_CMD 1  
@@ -31,9 +35,12 @@
 
 #define ledCount 10                       //Number of led in each strip
 #define reverseCount 3					  //Number of reverse light size
-#define Brightness 5                      //0 to 255
+#define initLedCount 3					  //Number of led in initialization animation
+#define Brightness 50                     //0 to 255
 #define lengthOfReverseLight 3            //How many Led shine white during reversing
 #define indicatorTimeDurationInMs 500     //How long indicators and hazard will blink
+
+#define delayInitChangeInMs 100			  //Time in [ms] after that change lights strip in initialization
 
 
 //
@@ -41,22 +48,22 @@
 //
 typedef enum
 {
-LAMP_STATE_HEADLIGHTS,          //1
-LAMP_STATE_STOP,                //2
-LAMP_STATE_TURN_L_STOP,         //3
-LAMP_STATE_TURN_R_STOP,         //4
-LAMP_STATE_TURN_L_REVERSE,      //5
-LAMP_STATE_TURN_R_REVERSE,      //6
-LAMP_STATE_HAZARD_LIGHTS,       //7
-LAMP_STATE_HAZARD_REVERSE,      //8
-LAMP_STATE_TURN_L_HEADLIGHTS,   //9
-LAMP_STATE_TURN_R_HEADLIGHTS,   //10
-LAMP_STATE_REVERSE,             //11
-LAMP_STATE_STOP_REVERSE,        //12
-LAMP_STATE_HAZARD_STOP,         //13
-LAMP_STATE_LIGHTS_OFF,          //14
-LAMP_STATE_ACTIVATION,          //15     
-LAMP_STATE_SHUTDOWN             //16
+LAMP_STATE_HEADLIGHTS = 1,          //1
+LAMP_STATE_STOP = 2,                //2
+LAMP_STATE_TURN_L_STOP = 3,         //3
+LAMP_STATE_TURN_R_STOP = 4,         //4
+LAMP_STATE_TURN_L_REVERSE = 5,      //5
+LAMP_STATE_TURN_R_REVERSE = 6,      //6
+LAMP_STATE_HAZARD_LIGHTS = 7,       //7
+LAMP_STATE_HAZARD_REVERSE = 8,      //8
+LAMP_STATE_TURN_L_HEADLIGHTS = 9,   //9
+LAMP_STATE_TURN_R_HEADLIGHTS = 10,   //10
+LAMP_STATE_REVERSE = 11,             //11
+LAMP_STATE_STOP_REVERSE = 12,        //12
+LAMP_STATE_HAZARD_STOP = 13,         //13
+LAMP_STATE_LIGHTS_OFF = 14,          //14
+LAMP_STATE_ACTIVATION = 15,          //15     
+LAMP_STATE_SHUTDOWN = 16             //16
 } RearLampState;
 
 // Variable to hold current state of lamps
@@ -144,8 +151,17 @@ void loop()
   { 
     dataReceivedString = Serial.readStringUntil('\n'); 
     NewCommand = StoI_f(dataReceivedString); // String to int
-
+	#if DEBUG_MODE
+	Serial.print("\nNew Comand: ");
+	Serial.println(NewCommand, DEC);
+	#endif
     SwitchLampRegular();
+	#if DEBUG_MODE
+	Serial.print("New Lamp State: ");
+	Serial.println(lampState);
+	#endif
+
+	ChangeStateFlag = true;
   }
 
   MakeCurrentLampsStateAcion();
@@ -262,7 +278,7 @@ void MakeCurrentLampsStateAcion(void)
 		break;
 
 		case LAMP_STATE_HAZARD_LIGHTS:
-		HazardLightsAcion();;
+		HazardLightsAcion();
 		break;
 
 		case LAMP_STATE_HAZARD_REVERSE:
@@ -327,7 +343,7 @@ void StopRoutine(receivedCommand NewCommand) // 6 possibilities
   else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
   else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
   else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
-  else if((TURN_OFF_STOP_CMD || HEADLIGHTS_CMD) == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
 }
 
 void TurnLStopRoutine(receivedCommand NewCommand) // 4 possibilities
@@ -423,7 +439,10 @@ void HazardStopRoutine(receivedCommand NewCommand) // 3 possibilities
 
 void LightsOffRoutine(receivedCommand NewCommand)
 {
-  ActivationsAcion();
+  	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
+	//TODO ADD any possibilities like indicators, stop etc with turning off headlights
+
 }
 
 void ActivationsRoutine(receivedCommand NewCommand)
@@ -433,7 +452,8 @@ void ActivationsRoutine(receivedCommand NewCommand)
 
 void ShutdownRoutine(receivedCommand NewCommand)
 {
-
+	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
 }
 
 
@@ -444,24 +464,38 @@ void ShutdownRoutine(receivedCommand NewCommand)
 //
 void HeadlightsAcion(void)
 {
-  for (int i = 0; i < ledCount; i++) 
-  {
-	strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
-    strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
-  }
-  strip1t.show();
-  strip2t.show();
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Headlights action");
+		#endif
+	}
+	for (int i = 0; i < ledCount; i++) 
+	{
+		strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
+    	strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
+  	}
+  	strip1t.show();
+  	strip2t.show();
 }
 
 void StopAcion(void)
 {
-  for (int i = 0; i < ledCount; i++) 
-  {
-    strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
-    strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
-  }
-  strip1t.show();
-  strip2t.show();
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Stop action");
+		#endif
+	}
+  	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+    	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+  	}
+  	strip1t.show();
+  	strip2t.show();
 }
 
 void TurnLStopAcion(void)
@@ -505,6 +539,14 @@ void TurnRHeadlightsAcion(void)
 
 void ReverseAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Reverse action");
+		#endif
+	}
+
 	for (int i = 0; i < ledCount; i++) 
 	{
 		strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
@@ -520,6 +562,27 @@ void ReverseAcion(void)
 
 void StopReverseAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Stop Reverse action");
+		#endif
+	}
+
+	// STOP
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+    	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+  	}
+	// REVERSE
+	for (int i = 0; i < reverseCount; i++) 
+	{
+    	strip1t.setPixelColor(i, strip1t.Color(255, 255, 255));
+	}
+  	strip1t.show();
+  	strip2t.show();
 
 }
 
@@ -529,20 +592,103 @@ void HazardStopAcion(void)
 }
 void LightsOffAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Lights off action");
+		#endif
+	}
+
+	clearLed12t();
 
 }
+
 void ActivationsAcion(void)
 {
-	// TODO! initialization
-	lampState = LAMP_STATE_HEADLIGHTS;
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+		Serial.println("Lights init action");
+		#endif
+	}
+
+	//// LEDS MOVE UP
+    for( int i = 0; i < ledCount; i++)
+	{  
+    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+       	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+       	delay(delayInitChangeInMs);
+     
+         	if( i >= initLedCount) //turning of led from start
+			{ 
+          		strip1t.setPixelColor(i-initLedCount, strip1t.Color(0, 0, 0));
+          		strip2t.setPixelColor(i-initLedCount, strip2t.Color(0, 0, 0));
+         	}
+       		strip1t.show();
+       		strip2t.show();
+    
+	} 
+	/// if should hide all
+	#if HIDING_INDICATOR
+        for(int k = (ledCount-initLedCount); k <= ledCount ; k++)
+		{  
+        	strip1.setPixelColor(k, strip1.Color(0, 0, 0));
+          	strip2.setPixelColor(k, strip2.Color(0, 0, 0));
+          	strip1.show();
+          	strip2.show();
+          	delay(delayInitChangeInMs);   
+        }
+  	#endif
+  
+	// LEDS MOVE DOWN
+    for( int i = ledCount-(initLedCount-1); i >= 0; i--) 
+	{  
+       	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+       	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+       	delay(delayInitChangeInMs);
+  
+       	if( i< ledCount-initLedCount)
+	   	{ 
+       	   	strip1t.setPixelColor(i+initLedCount+2, strip1t.Color(0, 0, 0));
+          	strip2t.setPixelColor(i+initLedCount+2, strip2t.Color(0, 0, 0));
+        }
+       strip1t.show();
+       strip2t.show();
+
+       } // WERSJA BEZ AUTOMATYCZNYCH SWIATEL DZIENNYCH USUNAC FOR PONIZEJ ZEBY ZOSTALY DZIENNE
+
+	#if NO_AUTOMATIC_DAYLIGHT
+        for(int k = initLedCount+1; k >= 0 ; k--) 
+		{ 
+                  strip1t.setPixelColor(k, strip1t.Color(0, 0, 0));
+                  strip2t.setPixelColor(k, strip2t.Color(0, 0, 0));
+                  strip1t.show();
+                  strip2t.show();
+                  delay(delayInitChangeInMs);   
+        }
+		lampState = LAMP_STATE_SHUTDOWN;
+	#else 
+		lampState = LAMP_STATE_HEADLIGHTS;	  
+	#endif
+
+	#if DEBUG_MODE
+		Serial.print("Curren state: ");
+		Serial.println(lampState);
+	#endif
+
 	MakeCurrentLampsStateAcion();	
 }
 
 void ShutdownAcion(void)
 {
-
+	//TODO! animation shutdown
+	lampState = LAMP_STATE_LIGHTS_OFF;
 }
 
+
+///
 
 void clearLed12t()
 {
