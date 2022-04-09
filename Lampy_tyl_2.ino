@@ -30,6 +30,7 @@
 #define ledStripPin2t 11                  //Right strip connection Pin
 
 #define ledCount 10                       //Number of led in each strip
+#define reverseCount 3					  //Number of reverse light size
 #define Brightness 5                      //0 to 255
 #define lengthOfReverseLight 3            //How many Led shine white during reversing
 #define indicatorTimeDurationInMs 500     //How long indicators and hazard will blink
@@ -234,7 +235,75 @@ void SwitchLampRegular()
 //
 void MakeCurrentLampsStateAcion(void)
 {
+	switch(lampState)
+	{
+		case LAMP_STATE_HEADLIGHTS:
+		HeadlightsAcion();
+		break;
 
+		case LAMP_STATE_STOP:
+		StopAcion();
+		break;
+
+		case LAMP_STATE_TURN_L_STOP:
+		TurnLStopAcion();
+		break;
+
+		case LAMP_STATE_TURN_R_STOP:
+		TurnRStopAcion();
+		break;
+
+		case LAMP_STATE_TURN_L_REVERSE:
+		TurnLReverseAcion();
+		break;
+
+		case LAMP_STATE_TURN_R_REVERSE:
+		TurnRReverseAcion();
+		break;
+
+		case LAMP_STATE_HAZARD_LIGHTS:
+		HazardLightsAcion();;
+		break;
+
+		case LAMP_STATE_HAZARD_REVERSE:
+		HazardReverseAcion();
+		break;
+
+		case LAMP_STATE_TURN_L_HEADLIGHTS:
+		TurnLHeadlightsAcion();
+		break;
+		
+		case LAMP_STATE_TURN_R_HEADLIGHTS:
+		TurnRHeadlightsAcion();
+		break;
+		
+		case LAMP_STATE_REVERSE:
+		ReverseAcion();
+		break;
+
+		case LAMP_STATE_STOP_REVERSE:
+		StopReverseAcion();
+		break;
+
+		case LAMP_STATE_HAZARD_STOP:
+		HazardStopAcion();
+		break;
+
+		case LAMP_STATE_LIGHTS_OFF:
+		LightsOffAcion();
+		break;
+
+		case LAMP_STATE_ACTIVATION:
+		ActivationsAcion();
+		break;
+
+		case LAMP_STATE_SHUTDOWN:
+		ShutdownAcion();
+		break;
+		
+		default:
+		break;
+	}
 }
 
 
@@ -375,12 +444,24 @@ void ShutdownRoutine(receivedCommand NewCommand)
 //
 void HeadlightsAcion(void)
 {
-
+  for (int i = 0; i < ledCount; i++) 
+  {
+	strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
+    strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
+  }
+  strip1t.show();
+  strip2t.show();
 }
 
 void StopAcion(void)
 {
-  
+  for (int i = 0; i < ledCount; i++) 
+  {
+    strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+    strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+  }
+  strip1t.show();
+  strip2t.show();
 }
 
 void TurnLStopAcion(void)
@@ -424,7 +505,17 @@ void TurnRHeadlightsAcion(void)
 
 void ReverseAcion(void)
 {
-
+	for (int i = 0; i < ledCount; i++) 
+	{
+		strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
+    	strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
+	}
+	for (int i = 0; i < reverseCount; i++) 
+	{
+    	strip1t.setPixelColor(i, strip1t.Color(255, 255, 255));
+	}
+  	strip1t.show();
+  	strip2t.show();
 }
 
 void StopReverseAcion(void)
@@ -442,12 +533,14 @@ void LightsOffAcion(void)
 }
 void ActivationsAcion(void)
 {
-
+	// TODO! initialization
+	lampState = LAMP_STATE_HEADLIGHTS;
+	MakeCurrentLampsStateAcion();	
 }
 
 void ShutdownAcion(void)
 {
-  
+
 }
 
 
