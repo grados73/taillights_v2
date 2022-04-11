@@ -361,7 +361,7 @@ void HeadlightsRoutine(receivedCommand NewCommand) // 6 possibilities
 {
   if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
   else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
+  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
   else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
   else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
   else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
@@ -512,6 +512,7 @@ void HeadlightsAcion(void)
   	strip2t.show();
 }
 
+//******************************************************//
 void StopAcion(void)
 {
 	if(ChangeStateFlag)
@@ -530,6 +531,7 @@ void StopAcion(void)
   	strip2t.show();
 }
 
+//******************************************************//
 void TurnLStopAcion(void)
 {
 	if(ChangeStateFlag)
@@ -572,6 +574,7 @@ void TurnLStopAcion(void)
 	}
 }
 
+//******************************************************//
 void TurnRStopAcion(void)
 {
 	if(ChangeStateFlag)
@@ -614,26 +617,127 @@ void TurnRStopAcion(void)
 	}
 }
 
+//******************************************************//
 void TurnLReverseAcion(void)
 {
-	
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Turn left reverse Headlight");
+		#endif
 
+	for (int i = 0; i < reverseCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+  	}
+	for (int i = reverseCount; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip1t.show();
+
+	LeftIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < reverseCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+			}
+			for (int i = reverseCount; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < reverseCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+			}
+			for (int i = reverseCount; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		strip1t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 }
+
+//******************************************************//
 void TurnRReverseAcion(void)
 {
-
+	TurnRHeadlightsAcion();
 }
 
+//******************************************************//
 void HazardLightsAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Hazard Light actions");
+		#endif
+
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+		strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip1t.show();
+	strip2t.show();
+
+	LeftIndicatorCurrentState = true;
+	RightIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		RightIndicatorCurrentState = !RightIndicatorCurrentState;
+		strip1t.show();	
+		strip2t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 
 }
 
+//******************************************************//
 void HazardReverseAcion(void)
 {
 
 }
 
+//******************************************************//
 void TurnLHeadlightsAcion(void)
 {
 	if(ChangeStateFlag)
@@ -658,7 +762,7 @@ void TurnLHeadlightsAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip1t.setPixelColor(i, strip1t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+				strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
 			}
 		}
 
@@ -677,6 +781,7 @@ void TurnLHeadlightsAcion(void)
 
 }
 
+//******************************************************//
 void TurnRHeadlightsAcion(void)
 {
 	if(ChangeStateFlag)
@@ -701,7 +806,7 @@ void TurnRHeadlightsAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip2t.setPixelColor(i, strip2t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
 			}
 		}
 
@@ -720,6 +825,7 @@ void TurnRHeadlightsAcion(void)
 
 }
 
+//******************************************************//
 void ReverseAcion(void)
 {
 	if(ChangeStateFlag)
@@ -743,6 +849,7 @@ void ReverseAcion(void)
   	strip2t.show();
 }
 
+//******************************************************//
 void StopReverseAcion(void)
 {
 	if(ChangeStateFlag)
@@ -769,11 +876,13 @@ void StopReverseAcion(void)
 
 }
 
+//******************************************************//
 void HazardStopAcion(void)
 {
 
 }
 
+//******************************************************//
 void LightsOffAcion(void)
 {
 	if(ChangeStateFlag)
@@ -788,6 +897,7 @@ void LightsOffAcion(void)
 
 }
 
+//******************************************************//
 void ActivationsAcion(void)
 {
 	if(ChangeStateFlag)
@@ -865,6 +975,7 @@ void ActivationsAcion(void)
 	MakeCurrentLampsStateAcion();	
 }
 
+//******************************************************//
 void ShutdownAcion(void)
 {
 	//TODO! animation shutdown
