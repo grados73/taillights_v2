@@ -42,6 +42,26 @@
 
 #define delayInitChangeInMs 100			  //Time in [ms] after that change lights strip in initialization
 
+// RGB color each symbol
+#define RGB_STOP_R 255
+#define RGB_STOP_G 0
+#define RGB_STOP_B 0
+
+#define RGB_HEADLIGHT_R 140
+#define RGB_HEADLIGHT_G 0
+#define RGB_HEADLIGHT_B 0
+
+#define RGB_INDICATOR_R 255
+#define RGB_INDICATOR_G 215
+#define RGB_INDICATOR_B 0
+
+#define RGB_REVERSE_R 255
+#define RGB_REVERSE_G 255
+#define RGB_REVERSE_B 255
+
+#define RGB_OFF_R 0
+#define RGB_OFF_G 0
+#define RGB_OFF_B 0
 
 //
 // Structure of LAMPS current state
@@ -351,7 +371,7 @@ void StopRoutine(receivedCommand NewCommand) // 6 possibilities
 {
   if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
   else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
+  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
   else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
   else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
   else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
@@ -453,7 +473,7 @@ void LightsOffRoutine(receivedCommand NewCommand)
   	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
 	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
 	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
 
 }
 
@@ -485,8 +505,8 @@ void HeadlightsAcion(void)
 	}
 	for (int i = 0; i < ledCount; i++) 
 	{
-		strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
-    	strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
+		strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
   	}
   	strip1t.show();
   	strip2t.show();
@@ -503,8 +523,8 @@ void StopAcion(void)
 	}
   	for (int i = 0; i < ledCount; i++) 
  	{
-    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
-    	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
   	}
   	strip1t.show();
   	strip2t.show();
@@ -521,7 +541,7 @@ void TurnLStopAcion(void)
 
 	for (int i = 0; i < ledCount; i++) 
  	{
-    	strip1t.setPixelColor(i, strip1t.Color(255, 215, 0));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
   	}
   	strip1t.show();
 	LeftIndicatorCurrentState = true;
@@ -534,7 +554,7 @@ void TurnLStopAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+				strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
 			}
 		}
 
@@ -542,7 +562,7 @@ void TurnLStopAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip1t.setPixelColor(i, strip1t.Color(255, 215, 0));
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
 			}
 		}
 
@@ -563,7 +583,7 @@ void TurnRStopAcion(void)
 
 	for (int i = 0; i < ledCount; i++) 
  	{
-    	strip2t.setPixelColor(i, strip2t.Color(255, 215, 0));
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
   	}
   	strip2t.show();
 	RightIndicatorCurrentState = true;
@@ -576,7 +596,7 @@ void TurnRStopAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
 			}
 		}
 
@@ -584,7 +604,7 @@ void TurnRStopAcion(void)
 		{
 			for (int i = 0; i < ledCount; i++) 
 			{
-				strip2t.setPixelColor(i, strip1t.Color(255, 215, 0));
+				strip2t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
 			}
 		}
 		
@@ -596,6 +616,7 @@ void TurnRStopAcion(void)
 
 void TurnLReverseAcion(void)
 {
+	
 
 }
 void TurnRReverseAcion(void)
@@ -615,11 +636,87 @@ void HazardReverseAcion(void)
 
 void TurnLHeadlightsAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Turn left Headlight");
+		#endif
+
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip1t.show();
+	LeftIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		strip1t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 
 }
 
 void TurnRHeadlightsAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Turn right headlight");
+		#endif
+
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip2t.show();
+	RightIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == RightIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip2t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+		
+		RightIndicatorCurrentState = !RightIndicatorCurrentState;
+		strip2t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 
 }
 
@@ -635,12 +732,12 @@ void ReverseAcion(void)
 
 	for (int i = 0; i < ledCount; i++) 
 	{
-		strip1t.setPixelColor(i, strip1t.Color(140, 0, 0));
-    	strip2t.setPixelColor(i, strip2t.Color(140, 0, 0));
+		strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
 	}
 	for (int i = 0; i < reverseCount; i++) 
 	{
-    	strip1t.setPixelColor(i, strip1t.Color(255, 255, 255));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
 	}
   	strip1t.show();
   	strip2t.show();
@@ -659,13 +756,13 @@ void StopReverseAcion(void)
 	// STOP
 	for (int i = 0; i < ledCount; i++) 
  	{
-    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
-    	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
   	}
 	// REVERSE
 	for (int i = 0; i < reverseCount; i++) 
 	{
-    	strip1t.setPixelColor(i, strip1t.Color(255, 255, 255));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
 	}
   	strip1t.show();
   	strip2t.show();
@@ -676,6 +773,7 @@ void HazardStopAcion(void)
 {
 
 }
+
 void LightsOffAcion(void)
 {
 	if(ChangeStateFlag)
@@ -703,14 +801,14 @@ void ActivationsAcion(void)
 	//// LEDS MOVE UP
     for( int i = 0; i < ledCount; i++)
 	{  
-    	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
-       	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+       	strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
        	delay(delayInitChangeInMs);
      
          	if( i >= initLedCount) //turning of led from start
 			{ 
-          		strip1t.setPixelColor(i-initLedCount, strip1t.Color(0, 0, 0));
-          		strip2t.setPixelColor(i-initLedCount, strip2t.Color(0, 0, 0));
+          		strip1t.setPixelColor(i-initLedCount, strip1t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+          		strip2t.setPixelColor(i-initLedCount, strip2t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
          	}
        		strip1t.show();
        		strip2t.show();
@@ -720,8 +818,8 @@ void ActivationsAcion(void)
 	#if HIDING_INDICATOR
         for(int k = (ledCount-initLedCount); k <= ledCount ; k++)
 		{  
-        	strip1.setPixelColor(k, strip1.Color(0, 0, 0));
-          	strip2.setPixelColor(k, strip2.Color(0, 0, 0));
+        	strip1.setPixelColor(k, strip1.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+          	strip2.setPixelColor(k, strip2.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
           	strip1.show();
           	strip2.show();
           	delay(delayInitChangeInMs);   
@@ -731,14 +829,14 @@ void ActivationsAcion(void)
 	// LEDS MOVE DOWN
     for( int i = ledCount-(initLedCount-1); i >= 0; i--) 
 	{  
-       	strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
-       	strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+       	strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+       	strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
        	delay(delayInitChangeInMs);
   
        	if( i< ledCount-initLedCount)
 	   	{ 
-       	   	strip1t.setPixelColor(i+initLedCount+2, strip1t.Color(0, 0, 0));
-          	strip2t.setPixelColor(i+initLedCount+2, strip2t.Color(0, 0, 0));
+       	   	strip1t.setPixelColor(i+initLedCount+2, strip1t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+          	strip2t.setPixelColor(i+initLedCount+2, strip2t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
         }
        strip1t.show();
        strip2t.show();
@@ -748,8 +846,8 @@ void ActivationsAcion(void)
 	#if NO_AUTOMATIC_DAYLIGHT
         for(int k = initLedCount+1; k >= 0 ; k--) 
 		{ 
-                  strip1t.setPixelColor(k, strip1t.Color(0, 0, 0));
-                  strip2t.setPixelColor(k, strip2t.Color(0, 0, 0));
+                  strip1t.setPixelColor(k, strip1t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
+                  strip2t.setPixelColor(k, strip2t.Color(RGB_OFF_R, RGB_OFF_G, RGB_OFF_B));
                   strip1t.show();
                   strip2t.show();
                   delay(delayInitChangeInMs);   
