@@ -359,133 +359,149 @@ void MakeCurrentLampsStateAcion(void)
 //
 void HeadlightsRoutine(receivedCommand NewCommand) // 6 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
-  else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
-  else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+	else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
 }
 
 void StopRoutine(receivedCommand NewCommand) // 6 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
-  else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
-  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
+	else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
+	else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
 }
 
 void TurnLStopRoutine(receivedCommand NewCommand) // 4 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+	else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
 }
 
 void TurnRStopRoutine(receivedCommand NewCommand) // 4 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+	else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
 }
 
 void TurnLReverseRoutine(receivedCommand NewCommand) // 4 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
 }
 
 void TurnRReverseRoutine(receivedCommand NewCommand) // 4 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
 }
 
 void HazardLightsRoutine(receivedCommand NewCommand) // 4 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
-  else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_STOP;
 }
 
 void HazardReverseRoutine(receivedCommand NewCommand) // 3 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
 }
 
 void TurnLHeadlightsRoutine(receivedCommand NewCommand) // 5 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
-  else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_STOP;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_HEADLIGHTS;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
 }
 
 void TurnRHeadlightsRoutine(receivedCommand NewCommand) // 5 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
-  else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_STOP;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_HEADLIGHTS;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
 }
 
 void ReverseRoutine(receivedCommand NewCommand) // 6 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
-  else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
-  else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP_REVERSE;
+	else if(HAZARD_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
 }
 
 void StopReverseRoutine(receivedCommand NewCommand) // 5 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
-  else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
-  else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_REVRESE_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+	else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+	else if(RIGHT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_R_REVERSE;
+	else if(LEFT_INDICATOR_CMD == NewCommand) lampState = LAMP_STATE_TURN_L_REVERSE;
 }
 
 void HazardStopRoutine(receivedCommand NewCommand) // 3 possibilities
 {
-  if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
-  else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
-  else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+	else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
+	else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
 }
 
 void LightsOffRoutine(receivedCommand NewCommand)
 {
-  	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
-	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
-	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
-	else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
+		if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
+		else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
+		else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+		else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_REVERSE;
 
 }
 
 void ActivationsRoutine(receivedCommand NewCommand)
 {
-  
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
 }
 
 void ShutdownRoutine(receivedCommand NewCommand)
 {
-	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
+	if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_LIGHTS_OFF;
+	else if(SHUTDOWN_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
 	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
 }
 
@@ -1065,7 +1081,7 @@ void ActivationsAcion(void)
        strip1t.show();
        strip2t.show();
 
-       } // WERSJA BEZ AUTOMATYCZNYCH SWIATEL DZIENNYCH USUNAC FOR PONIZEJ ZEBY ZOSTALY DZIENNE
+       } 
 
 	#if NO_AUTOMATIC_DAYLIGHT
         for(int k = initLedCount+1; k >= 0 ; k--) 
@@ -1092,29 +1108,60 @@ void ActivationsAcion(void)
 //******************************************************//
 void ShutdownAcion(void)
 {
-	//TODO! animation shutdown
+	for( int i = (0+initLedCount); i < ledCount; i++)
+	{  // indicators move up ^
+         strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+         strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+         delay(delayInitChangeInMs);
+       
+             if( i >= initLedCount){ //turning off indicators from begining
+              strip1t.setPixelColor(i-initLedCount, strip1t.Color(0, 0, 0));
+              strip2t.setPixelColor(i-initLedCount, strip2t.Color(0, 0, 0));
+             }
+         strip1t.show();
+         strip2t.show();
+     }
+     
+     for( int i = ledCount-initLedCount; i >= 0; i--){  // indicators move down
+           strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+           strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+           delay(delayInitChangeInMs);
+         
+               if( i< ledCount-initLedCount){ //turning off indicators from begining
+                  strip1t.setPixelColor(i+initLedCount, strip1t.Color(0, 0, 0));
+                  strip2t.setPixelColor(i+initLedCount, strip2t.Color(0, 0, 0));
+               }
+           strip1t.show();
+           strip2t.show();
+           }
+              for(int k = initLedCount; k >= 0 ; k--){  //hiding indicators
+                    strip1t.setPixelColor(k, strip1t.Color(0, 0, 0));
+                    strip2t.setPixelColor(k, strip2t.Color(0, 0, 0));
+                    strip1t.show();
+                    strip2t.show();
+                    delay(delayInitChangeInMs);   
+              }
 	lampState = LAMP_STATE_LIGHTS_OFF;
+	#if DEBUG_MODE
+		Serial.print("Curren state: ");
+		Serial.println(lampState);
+	#endif
+
+	MakeCurrentLampsStateAcion();	
 }
 
 
-///
-
+//Set both strip OFF
 void clearLed12t()
 {
-  for (int i = 0; i < ledCount; i++) 
-  {
-    strip1t.setPixelColor(i, 0, 0, 0);
-    strip2t.setPixelColor(i, 0, 0, 0);
-  } 
-    strip1t.show();
-    strip2t.show();
+	for (int i = 0; i < ledCount; i++) 
+	{
+		strip1t.setPixelColor(i, 0, 0, 0);
+		strip2t.setPixelColor(i, 0, 0, 0);
+	} 
+		strip1t.show();
+		strip2t.show();
 }
-
-
-
-
-
-
 
 
 int StoI_f(String daneString){
@@ -1138,6 +1185,6 @@ int StoI_f(String daneString){
   else if( daneString == "17") odebraneDaneInt = 17;
   else if( daneString == "18") odebraneDaneInt = 18;
   else if( daneString == "19") odebraneDaneInt = 19;
-  //else odebraneDaneInt = 0;
+
   return odebraneDaneInt;
 }
