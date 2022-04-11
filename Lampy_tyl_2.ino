@@ -13,7 +13,7 @@
 
 #define DEBUG_MODE 1 					// in debuging mode uC answeraing by serial about current state or received command - made to develop program
 #define HIDING_INDICATOR 0				// in initialization LEDs that light up move away the strip and hide
-#define NO_AUTOMATIC_DAYLIGHT 1			// after initialization headlights turn off automatically, 0 - turn headlight
+#define NO_AUTOMATIC_DAYLIGHT 0			// after initialization headlights turn off automatically, 0 - turn headlight
 
 
 //Control commands to receive
@@ -72,8 +72,14 @@ RearLampState lampState;
 // Flag signalizing after get new command
 bool ChangeStateFlag = false;
 
+bool LeftIndicatorCurrentState = false;
+bool RightIndicatorCurrentState = false;
+
 typedef int receivedCommand;
 receivedCommand NewCommand;
+
+unsigned long CurrentTimeInMs = 0; 		// Current time useing to blink turn lights etc
+unsigned long TimeOfLaskBlink = 0;	
 
 String dataReceivedString = ""; //Empty string to hold received data
 
@@ -147,24 +153,29 @@ void setup()
 void loop() 
 {
   // if new comand received
-  if(Serial.available() > 0) 
-  { 
-    dataReceivedString = Serial.readStringUntil('\n'); 
-    NewCommand = StoI_f(dataReceivedString); // String to int
-	#if DEBUG_MODE
-	Serial.print("\nNew Comand: ");
-	Serial.println(NewCommand, DEC);
-	#endif
-    SwitchLampRegular();
-	#if DEBUG_MODE
-	Serial.print("New Lamp State: ");
-	Serial.println(lampState);
-	#endif
+	if(Serial.available() > 0) 
+	{ 
+			dataReceivedString = Serial.readStringUntil('\n'); 
+			NewCommand = StoI_f(dataReceivedString); // String to int
+			#if DEBUG_MODE
+				Serial.print("\nNew Comand: ");
+				Serial.println(NewCommand, DEC);
+			#endif
 
-	ChangeStateFlag = true;
-  }
+			SwitchLampRegular();
 
-  MakeCurrentLampsStateAcion();
+			#if DEBUG_MODE
+				Serial.print("New Lamp State: ");
+				Serial.println(lampState);
+			#endif
+
+			ChangeStateFlag = true;
+
+	}
+
+	 CurrentTimeInMs = millis();
+
+ 	 MakeCurrentLampsStateAcion();
 
 }
 
@@ -441,7 +452,8 @@ void LightsOffRoutine(receivedCommand NewCommand)
 {
   	if(HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_HEADLIGHTS;
 	else if(ACTIVATION_SYSTEM_CMD == NewCommand) lampState = LAMP_STATE_ACTIVATION;
-	//TODO ADD any possibilities like indicators, stop etc with turning off headlights
+	else if(STOP_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+
 
 }
 
@@ -500,12 +512,86 @@ void StopAcion(void)
 
 void TurnLStopAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Turn left Stop");
+		#endif
 
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(255, 215, 0));
+  	}
+  	strip1t.show();
+	LeftIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(255, 0, 0));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(255, 215, 0));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		strip1t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 }
 
 void TurnRStopAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Turn right Stop");
+		#endif
 
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip2t.setPixelColor(i, strip2t.Color(255, 215, 0));
+  	}
+  	strip2t.show();
+	RightIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == RightIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip2t.Color(255, 0, 0));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip1t.Color(255, 215, 0));
+			}
+		}
+		
+		RightIndicatorCurrentState = !RightIndicatorCurrentState;
+		strip2t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 }
 
 void TurnLReverseAcion(void)
