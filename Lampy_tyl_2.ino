@@ -466,6 +466,7 @@ void HazardStopRoutine(receivedCommand NewCommand) // 3 possibilities
   if(TURN_OFF_HEADLIGHTS_CMD == NewCommand) lampState = LAMP_STATE_SHUTDOWN;
   else if(TURN_OFF_STOP_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_LIGHTS;
   else if(TURN_OFF_INDICATORS_CMD == NewCommand) lampState = LAMP_STATE_STOP;
+  else if(REVERSE_CMD == NewCommand) lampState = LAMP_STATE_HAZARD_REVERSE;
 }
 
 void LightsOffRoutine(receivedCommand NewCommand)
@@ -734,6 +735,74 @@ void HazardLightsAcion(void)
 //******************************************************//
 void HazardReverseAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Hazard Reverse Action");
+		#endif
+
+	for (int i = 0; i < reverseCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+  	}
+	for (int i = reverseCount; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+	  	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip1t.show();
+	strip2t.show();
+
+	LeftIndicatorCurrentState = true;
+	RightIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < reverseCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+			}
+			for (int i = reverseCount; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+			}
+
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip2t.Color(RGB_HEADLIGHT_R, RGB_HEADLIGHT_G, RGB_HEADLIGHT_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < reverseCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_REVERSE_R, RGB_REVERSE_G, RGB_REVERSE_B));
+			}
+			for (int i = reverseCount; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		RightIndicatorCurrentState = !RightIndicatorCurrentState;
+		strip1t.show();	
+		strip2t.show();
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 
 }
 
@@ -879,7 +948,52 @@ void StopReverseAcion(void)
 //******************************************************//
 void HazardStopAcion(void)
 {
+	if(ChangeStateFlag)
+	{
+		ChangeStateFlag = false;
+		#if DEBUG_MODE
+			Serial.println("Hazard Light actions");
+		#endif
 
+	for (int i = 0; i < ledCount; i++) 
+ 	{
+    	strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+		strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+  	}
+  	strip1t.show();
+	strip2t.show();
+
+	LeftIndicatorCurrentState = true;
+	RightIndicatorCurrentState = true;
+	TimeOfLaskBlink = CurrentTimeInMs;	
+	}
+
+	if((CurrentTimeInMs - TimeOfLaskBlink) >= indicatorTimeDurationInMs)
+	{
+		if(true == LeftIndicatorCurrentState) // If ON -> turn OFF
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_STOP_R, RGB_STOP_G, RGB_STOP_B));
+			}
+		}
+
+		else	// If OFF -> turn ON
+		{
+			for (int i = 0; i < ledCount; i++) 
+			{
+				strip1t.setPixelColor(i, strip1t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+				strip2t.setPixelColor(i, strip2t.Color(RGB_INDICATOR_R, RGB_INDICATOR_G, RGB_INDICATOR_B));
+			}
+		}
+
+		LeftIndicatorCurrentState = !LeftIndicatorCurrentState;
+		RightIndicatorCurrentState = !RightIndicatorCurrentState;
+		strip1t.show();	
+		strip2t.show();	
+		TimeOfLaskBlink = CurrentTimeInMs;
+	}
 }
 
 //******************************************************//
